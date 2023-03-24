@@ -45,15 +45,19 @@ class gra:
                         numer_tła = 0        
         self.duszki = []
         self.biegnie = True
+        self.tekst_zakończenia = self.płotno.create_text(245,235,text="Wygrana!", font=("None", 30), fill="white", state="hidden")
 
     def pętla_główna(self):
         while 1:
             if self.biegnie == True:
                 for duszek in self.duszki:
                     duszek.move()
-                self.tk.update_idletasks()
-                self.tk.update()
-                time.sleep(0.01)
+            else:
+                time.sleep(1)
+                self.płotno.itemconfig(self.tekst_zakończenia, state='normal')
+            self.tk.update_idletasks()
+            self.tk.update()
+            time.sleep(0.01)
 
 class Coords:
     def __init__(self, x1=0, y1=0, x2=0, y2=0):
