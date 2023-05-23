@@ -274,16 +274,47 @@ class DuszekDrzwi(Duszek):
         self.gra.płotno.itemconfig(self.image, image=self.drzwi_zamknięte)
         self.gra.tk.update_idletasks()
 
+class DuszekRuchomaPlatforma(Duszek):
+    def __init__(self, gra, obrazek, x, y, szerokość, wysokość):
+        Duszek.__init__(self, gra)
+        self.obrazek = obrazek
+        self.image = gra.płotno.create_image(x, y, image=self.obrazek, anchor='nw')
+        self.współrzędne = Coords()
+        self.x = 1
+        self.y = 0
+        self.licznik_poruszania_się = 0
+        self.szerokość = szerokość 
+        self.wysokość = wysokość
+        self.ostatni_czas = time.time()
+    def move(self):
+        if time.time() - self.ostatni_czas >= 0.03:
+            self.ostatni_czas = time.time()
+            self.gra.płotno.move(self.image, self.x, self.y)
+            self.licznik_poruszania_się += 1
+            if self.licznik_poruszania_się > 30:
+                self.x = self.x * -1 
+                self.licznik_poruszania_się = 0
+    def coords(self):
+        xy = self.gra.płotno.coords(self.image)
+        self.współrzędne.x1 = xy[0]
+        self.współrzędne.y1 = xy[1]
+        self.współrzędne.x2 = xy[0] + self.szerokość
+        self.współrzędne.y2 = xy[1] + self.wysokość
+        return self.współrzędne
+
 g = gra()
 platforma1 = DuszekPlatforma(g, PhotoImage(file="platforma1.gif"), 0, 480, 100, 10)
 platforma2 = DuszekPlatforma(g, PhotoImage(file="platforma1.gif"), 150, 440, 100, 10)
 platforma3 = DuszekPlatforma(g, PhotoImage(file="platforma1.gif"), 300, 400, 100, 10)
 platforma4 = DuszekPlatforma(g, PhotoImage(file="platforma1.gif"), 300, 160, 100, 10)
-platforma5 = DuszekPlatforma(g, PhotoImage(file="platforma2.gif"), 175, 350, 66, 10)
+platforma5 = DuszekRuchomaPlatforma(g, PhotoImage(file="platforma2.gif"), 175, 350, 66, 10)
+#platforma5 = DuszekPlatforma(g, PhotoImage(file="platforma2.gif"), 175, 350, 66, 10)
 platforma6 = DuszekPlatforma(g, PhotoImage(file="platforma2.gif"), 50, 300, 66, 10)
-platforma7 = DuszekPlatforma(g, PhotoImage(file="platforma2.gif"), 170, 120, 66, 10)
+platforma7 = DuszekRuchomaPlatforma(g, PhotoImage(file="platforma2.gif"), 170, 120, 66, 10)
+#platforma7 = DuszekPlatforma(g, PhotoImage(file="platforma2.gif"), 170, 120, 66, 10)
 platforma8 = DuszekPlatforma(g, PhotoImage(file="platforma2.gif"), 45, 60, 66, 10)
-platforma9 = DuszekPlatforma(g, PhotoImage(file="platforma3.gif"), 170, 250, 32, 10)
+platforma9 = DuszekRuchomaPlatforma(g, PhotoImage(file="platforma3.gif"), 170, 250, 3266, 10)
+#platforma9 = DuszekPlatforma(g, PhotoImage(file="platforma3.gif"), 170, 250, 32, 10)
 platforma10 = DuszekPlatforma(g, PhotoImage(file="platforma3.gif"), 230, 200, 32, 10)
 g.duszki.append(platforma1)
 g.duszki.append(platforma2)
