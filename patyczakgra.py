@@ -239,6 +239,7 @@ class DuszekPatyczak(Duszek):
                 self.x = 0
                 lewa = False
                 if duszek.koniecGry:
+                    self.wejść_do_drzwi(duszek)
                     self.gra.biegnie = False
             if prawa and self.x > 0 and kolizja_prawa(wsp, duszek_wsp):
                 self.x = 0
@@ -248,14 +249,30 @@ class DuszekPatyczak(Duszek):
         if spadanie and dół and self.y == 0 and wsp.y2 < self.gra.wysokość_płotna:
             self.y = 4
         self.gra.płotno.move(self.image, self.x, self.y)
+    
+    def wejść_do_drzwi(self, drzwi):
+        drzwi.otworzyć_drzwi()
+        time.sleep(0.5)
+        self.gra.płotno.itemconfig(self.image, state="hidden")
+        time.sleep(0.2)
+        drzwi.zamknąć_drzwi() 
 
 class DuszekDrzwi(Duszek):
     def __init__(self, gra, obrazek, x, y, szerokość, wysokość):
         Duszek.__init__(self, gra)
-        self.obrazek = obrazek
-        self.image = gra.płotno.create_image(x, y, image=self.obrazek, anchor="nw")
+        self.drzwi_otwarte = PhotoImage(file="drzwi2.gif")
+        self.drzwi_zamknięte = PhotoImage(file="drzwi1.gif")
+        self.image = gra.płotno.create_image(x, y, image=self.drzwi_zamknięte, anchor="nw")
         self.współrzędne = Coords(x, y, x + (szerokość / 2), y + wysokość)
         self.koniecGry = True
+
+    def otworzyć_drzwi(self):
+        self.gra.płotno.itemconfig(self.image, image=self.drzwi_otwarte)
+        self.gra.tk.update_idletasks()
+    
+    def zamknąć_drzwi(self):
+        self.gra.płotno.itemconfig(self.image, image=self.drzwi_zamknięte)
+        self.gra.tk.update_idletasks()
 
 g = gra()
 platforma1 = DuszekPlatforma(g, PhotoImage(file="platforma1.gif"), 0, 480, 100, 10)
